@@ -5,18 +5,19 @@ file=$1
 # 書き込みファイル用に拡張子を除いたファイル名を取得
 fwrite=`echo $file | sed -e "s/\.[^.]*$//"`
 
-# 改行を整える
 cat $file | sed -e 's/$/  /' > $fwrite.tmp
 
 ## コメントアウト（md 記法ではタイトルにあたる）の大きさを逆にする
 # 書き込み用ファイルの存在を確認
 if [ -f $fwrite.md ];then
-    # touch $fwrite.md
     rm $fwrite.md
 fi
 touch $fwrite.md
+if [ -f $fwrite.tmp1 ];then
+    rm $fwrite.tmp1
+fi
 func1(){
-    echo $line | sed -e 's/#/######/'
+    echo $line | sed -e 's/#/*/'
 }
 func2(){
     echo $line | sed -e 's/##/#####/'
@@ -39,19 +40,19 @@ func7(){
                                    word=(`echo $line`)
                                    echo ${word[0]};
                                    if [ "#" =  "${word[0]}" ];then
-                                       func1 >> $fwrite.md
+                                       func1 >> $fwrite.tmp1
                                    elif [ "##" =  "${word[0]}" ];then
-                                       func2 >> $fwrite.md
+                                       func2 >> $fwrite.tmp1
                                    elif [ "###" =  "${word[0]}" ];then
-                                       func3 >> $fwrite.md
+                                       func3 >> $fwrite.tmp1
                                    elif [ "####" =  "${word[0]}" ];then
-                                       func4 >> $fwrite.md
+                                       func4 >> $fwrite.tmp1
                                    elif [ "#####" =  "${word[0]}" ];then
-                                       func5 >> $fwrite.md
+                                       func5 >> $fwrite.tmp1
                                    elif [ "######" =  "${word[0]}" ];then
-                                       func6 >> $fwrite.md
+                                       func6 >> $fwrite.tmp1
                                    else                                       
-                                       echo $line >> $fwrite.md
+                                       echo $line >> $fwrite.tmp1
                                    fi
                           done
                       done
@@ -59,4 +60,10 @@ func7(){
 }
 func7
 
+# 改行を整える
+cat $fwrite.tmp1 | sed -e 's/$/  /' > $fwrite.md
+
+
 rm $fwrite.tmp
+rm $fwrite.tmp1
+
