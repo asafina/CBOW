@@ -1,2 +1,1 @@
-# CBOW
-2016.07.15
+### study python through construct CBOW
