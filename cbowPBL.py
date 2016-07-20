@@ -18,8 +18,7 @@ hikisuu = sys.argv
 #（第零引数には実行ファイル名、"cbowPBL.py" が入る）
 path = hikisuu[1]
 
-#########################################################################################
-#################################### python の勉強 #######################################
+###### python の勉強
 ## http://www.phontron.com/slides/nlp-programming-ja-00-intro.pdf
 
 #print 二通りの記述方法
@@ -54,7 +53,7 @@ for a in my_list:
 for i in range (3, 6):
     print ("%d: %d" % (i, my_list[i]))
 
-my_dict = {"朝比奈": 22}
+my_dict = {"英語": 22}
 
 print u"あいうえお"
 print my_dict
@@ -83,5 +82,34 @@ my_var7 = my_var6[0]
 print my_var7.encode("utf-8")
 
 
-#########################################################################################
+# Unicode の日本語文字列を検索するには、decode した検索文字列を用意する
+print ;
+print my_dict3.keys(), "==",
+nihongo = my_var3.decode("utf-8")
+print nihongo, ":", 
+if nihongo in my_dict3:
+    print u"日本語 exists in my_dict3"
+else:
+    print "日本語 does not exists in my_dict3"
 
+
+# items() は キー、値 の順で表示される
+my_dict4 = {"りんご": 1, "かき": 2, "めろん": 22, "がき": 54, "蜜柑": 67, "とまと": 98}
+for a, b in sorted (my_dict4.items()):
+     print("%s --> %d" % (a, b))
+
+## dict で存在しないキーを print してしまった時にエラーではなく値 0 を返すように
+from collections import defaultdict
+my_dict5 = defaultdict(lambda: 0)
+my_dict5["eric"] = 33
+print(my_dict5["eric"])
+print(my_dict5["fred"])
+print(my_dict5["arre"])
+# デフォルトではエラーが出る
+"""
+my_dict6 = {"cream": 12}
+print my_dict6
+print my_dict6["a"]
+"""
+
+###### ここまで
