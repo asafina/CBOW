@@ -10,10 +10,11 @@ cat $file | sed -e 's/$/  /' > $fwrite.tmp
 
 ## コメントアウト（md 記法ではタイトルにあたる）の大きさを逆にする
 # 書き込み用ファイルの存在を確認
-if [ ! -f $fwrite.md ];then
+if [ -f $fwrite.md ];then
     # touch $fwrite.md
-    echo "aru";
+    rm $fwrite.md
 fi
+touch $fwrite.md
 func1(){
     echo $line | sed -e 's/#/######/'
 }
