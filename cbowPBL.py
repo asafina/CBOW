@@ -2,26 +2,26 @@
 # -*- coding: utf-8 -*-
 
 import sys, os, math
-# import numpy as np
-# import scipy as sp
-# import ROOT
-# import pyfits as pf
+#import numpy as np
+#import scipy as sp
+#import ROOT
+#import pyfits as pf
 
-#デフォルトエンコードを変更するために sys をリロード
+# デフォルトエンコードを変更するために sys をリロード
 reload(sys)
-#デフォルトエンコードを ascii から utf-8 に変更
+# デフォルトエンコードを ascii から utf-8 に変更
 sys.setdefaultencoding("utf-8")
 
 hikisuu = sys.argv
 
-#第一引数に読み込みファイルのパスを指定
-#（第零引数には実行ファイル名、"cbowPBL.py" が入る）
+# 第一引数に読み込みファイルのパスを指定
+# （第零引数には実行ファイル名、"cbowPBL.py" が入る）
 path = hikisuu[1]
 
 ###### python の勉強
 ## http://www.phontron.com/slides/nlp-programming-ja-00-intro.pdf
 
-#print 二通りの記述方法
+# print 二通りの記述方法
 print ("path: %s" % (path))
 print "path: " + path #format が共通している場合のみ使用可
 
@@ -75,7 +75,7 @@ my_var4 = u"日本語"
 print my_var4
 print (len(my_var4))
 
-#dict のキーを utf-8 で標準出力したい場合、dict -> list -> var のようにたらいまわしにする
+# dict のキーを utf-8 で標準出力したい場合、dict -> list -> var のようにたらいまわしにする
 my_dict3 = {my_var4: 25}
 my_var6 = my_dict3.keys()
 my_var7 = my_var6[0]
