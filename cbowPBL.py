@@ -7,13 +7,14 @@ import sys, os, math
 reload(sys)
 # デフォルトエンコードを ascii から utf-8 に変更
 sys.setdefaultencoding("utf-8")
-
+# コマンドライン引数の取得
 hikisuu = sys.argv
 
 # 第一引数に読み込みファイルのパスを指定
 # （第零引数には実行ファイル名、"cbowPBL.py" が入る）
 path = hikisuu[1]
 
+"""
 ###### python の勉強
 ## http://www.phontron.com/slides/nlp-programming-ja-00-intro.pdf
 
@@ -77,7 +78,6 @@ my_var6 = my_dict3.keys()
 my_var7 = my_var6[0]
 print my_var7.encode("utf-8")
 
-
 # Unicode の日本語文字列を検索するには、decode した検索文字列を用意する
 print ;
 print my_dict3.keys(), "==",
@@ -87,7 +87,6 @@ if nihongo in my_dict3:
     print u"日本語 exists in my_dict3"
 else:
     print "日本語 does not exists in my_dict3"
-
 
 # items() は キー、値 の順で表示される
 my_dict4 = {"りんご": 1, "かき": 2, "めろん": 22, "がき": 54, "蜜柑": 67, "とまと": 98}
@@ -107,5 +106,32 @@ my_dict6 = {"cream": 12}
 print my_dict6
 print my_dict6["a"]
 """
+# 文字列の分割・結合
+str1 = u"私は 学生 です 。"
+words = str1.split(" ")
+
+for a in words:
+    print a
+
+list1 = ["私は", "学生", "です", "。"]
+print list1
+for a in list1:
+    alter = a.encode("utf-8")
+    print alter
+
+print (".".join(words))
+print "ねえ、".join(list1)
+
+# 関数
+def add_and_abs(x, y):
+    z = x + y
+    if z >= 0:
+        return z
+    else:
+        return z * -1
+
+print add_and_abs(0, 1)
+print add_and_abs(-1, -1)
 
 ###### ここまで
+"""
