@@ -2,10 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import sys, os, math
-#import numpy as np
-#import scipy as sp
-#import ROOT
-#import pyfits as pf
 
 # デフォルトエンコードを変更するために sys をリロード
 reload(sys)
