@@ -1,111 +1,362 @@
-#!/usr/bin/env python  
-* -*- coding: utf-8 -*-  
-  
-import sys, os, math  
-  
-* デフォルトエンコードを変更するために sys をリロード  
-reload(sys)  
-* デフォルトエンコードを ascii から utf-8 に変更  
-sys.setdefaultencoding("utf-8")  
-  
-hikisuu = sys.argv  
-  
-* 第一引数に読み込みファイルのパスを指定  
-* （第零引数には実行ファイル名、"cbowPBL.py" が入る）  
-path = hikisuu[1]  
-  
-# python の勉強  
-##### http://www.phontron.com/slides/nlp-programming-ja-00-intro.pdf  
-  
-* print 二通りの記述方法  
-print ("path: %s" % (path))  
-print "path: " + path #format が共通している場合のみ使用可  
-  
-my_var = 5  
-  
-if my_var == 4:  
-print "4."  
-else :  
-print "not 4."  
-  
-for i in range (1, my_var):  
-* print "i: " + i #これはフォーマットが合っていないので使えない  
-print ("i: %d" % (i))  
-  
-my_list = [1, 2, 3, 4, 5]  
-print my_list  
-print ("1+1 = %d" % my_list[1])  
-my_list.append(6)  
-print my_list  
-print (len(my_list))  
-  
-* 改行  
-print("")  
-print ;  
-  
-for a in my_list:  
-print(a)  
-  
-for i in range (3, 6):  
-print ("%d: %d" % (i, my_list[i]))  
-  
-my_dict = {"英語": 22}  
-  
-print u"あいうえお"  
-print my_dict  
-  
-print "defaultencoding:", sys.getdefaultencoding()  
-  
-my_dict2 = {"alice": 23, "alan": 24}  
-print (len(my_dict2))  
-  
-my_var2 = "abcde"  
-print my_var2  
-print (len(my_var2))  
-  
-my_var3 = "日本語"  
-print my_var3  
-print (len(my_var3))  
-  
-my_var4 = u"日本語"  
-print my_var4  
-print (len(my_var4))  
-  
-* dict のキーを utf-8 で標準出力したい場合、dict -> list -> var のようにたらいまわしにする  
-my_dict3 = {my_var4: 25}  
-my_var6 = my_dict3.keys()  
-my_var7 = my_var6[0]  
-print my_var7.encode("utf-8")  
-  
-  
-* Unicode の日本語文字列を検索するには、decode した検索文字列を用意する  
-print ;  
-print my_dict3.keys(), "==",  
-nihongo = my_var3.decode("utf-8")  
-print nihongo, ":",  
-if nihongo in my_dict3:  
-print u"日本語 exists in my_dict3"  
-else:  
-print "日本語 does not exists in my_dict3"  
-  
-  
-* items() は キー、値 の順で表示される  
-my_dict4 = {"りんご": 1, "かき": 2, "めろん": 22, "がき": 54, "蜜柑": 67, "とまと": 98}  
-for a, b in sorted (my_dict4.items()):  
-print("%s --> %d" % (a, b))  
-  
-##### dict で存在しないキーを print してしまった時にエラーではなく値 0 を返すように  
-from collections import defaultdict  
-my_dict5 = defaultdict(lambda: 0)  
-my_dict5["eric"] = 33  
-print(my_dict5["eric"])  
-print(my_dict5["fred"])  
-print(my_dict5["arre"])  
-* デフォルトではエラーが出る  
-"""  
-my_dict6 = {"cream": 12}  
-print my_dict6  
-print my_dict6["a"]  
-"""  
-  
-# ここまで  
+{  
+"cells": [  
+{  
+"cell_type": "code",  
+"execution_count": 5,  
+"metadata": {  
+"collapsed": false  
+},  
+"outputs": [],  
+"source": [  
+"import numpy as npn",  
+"np.random.seed(13)n",  
+"n",  
+"from IPython.display import SVGn",  
+"from keras.models import Sequentialn",  
+"from keras.layers import Dense, Embedding, Lambdan",  
+"from keras.utils.data_utils import get_filen",  
+"from keras.utils import np_utilsn",  
+"from keras.utils.visualize_util import model_to_dot, plotn",  
+"from keras.preprocessing import sequencen",  
+"from keras.preprocessing.text import Tokenizer, base_filtern",  
+"from gensim.models.doc2vec import Word2Vecn",  
+"n",  
+"### k.mean( )で必要になるので追加n",  
+"from keras import backend as K"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": 6,  
+"metadata": {  
+"collapsed": true  
+},  
+"outputs": [],  
+"source": [  
+"base_filter()n",  
+"path = get_file('alice.txt', origin="http://www.gutenberg.org/cache/epub/11/pg11.txt")n",  
+"corpus = open(path).readlines()[0:200]n",  
+"n",  
+"### new line more than 2 を削除n",  
+"corpus = [sentence for sentence in corpus if sentence.count(" ") >= 2]n",  
+"n",  
+"### base_filter に ' を追加n",  
+"tokenizer = Tokenizer(filters=base_filter()+"'")n",  
+"n",  
+"### corpus を整形n",  
+"tokenizer.fit_on_texts(corpus)n",  
+"n",  
+"### corpus の型を sequence に変更（file 出力できなかった）n",  
+"corpus = tokenizer.texts_to_sequences(corpus)n",  
+"n",  
+"### sequence の合計を nb_samples に代入n",  
+"nb_samples = sum(len(s) for s in corpus)n",  
+"n",  
+"### 語彙数を数えるn",  
+"V = len(tokenizer.word_index) + 1n",  
+"n",  
+"### 多分、特徴ベクトルの次元数n",  
+"dim = 100n",  
+"n",  
+"### 文脈窓n",  
+"window_size = 2"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": 7,  
+"metadata": {  
+"collapsed": true  
+},  
+"outputs": [],  
+"source": [  
+"### CBOW の定義n",  
+"def generate_data(corpus, window_size, V):n",  
+" maxlen = window_size*2n",  
+" for words in corpus:n",  
+" n",  
+" ### リストを生成n",  
+" contexts = []n",  
+" labels = []n",  
+" L = len(words)n",  
+" n",  
+" for index, word in enumerate(words):n",  
+" s = index-window_sizen",  
+" e = index+window_size+1n",  
+" n",  
+" contexts.append([words[i] for i in range(s, e) if 0 <= i < L and i != index])n",  
+" labels.append(word)n",  
+" n",  
+" ### x はシーケンス型n",  
+" x = sequence.pad_sequences(contexts, maxlen=maxlen)n",  
+" n",  
+" ### y は？n",  
+" y = np_utils.to_categorical(labels, V)n",  
+"n",  
+" yield (x, y)"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": 8,  
+"metadata": {  
+"collapsed": false  
+},  
+"outputs": [  
+{  
+"data": {  
+"image/svg+xml": [  
+"<svg height="304pt" viewBox="0.00 0.00 330.00 304.00" width="330pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">n",  
+"<g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 300)">n",  
+"<title>G</title>n",  
+"<polygon fill="white" points="-4,4 -4,-300 326,-300 326,4 -4,4" stroke="none"/>n",  
+"<!-- 139882786476752 -->n",  
+"<g class="node" id="node1"><title>139882786476752</title>n",  
+"<polygon fill="none" points="0,-249.5 0,-295.5 322,-295.5 322,-249.5 0,-249.5" stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="99" y="-268.8">embedding_input_2 (InputLayer)</text>n",  
+"<polyline fill="none" points="198,-249.5 198,-295.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="225.5" y="-280.3">input:</text>n",  
+"<polyline fill="none" points="198,-272.5 253,-272.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="225.5" y="-257.3">output:</text>n",  
+"<polyline fill="none" points="253,-249.5 253,-295.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="287.5" y="-280.3">(None, 4)</text>n",  
+"<polyline fill="none" points="253,-272.5 322,-272.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="287.5" y="-257.3">(None, 4)</text>n",  
+"</g>n",  
+"<!-- 139882786476816 -->n",  
+"<g class="node" id="node2"><title>139882786476816</title>n",  
+"<polygon fill="none" points="1.5,-166.5 1.5,-212.5 320.5,-212.5 320.5,-166.5 1.5,-166.5" stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="85" y="-185.8">embedding_2 (Embedding)</text>n",  
+"<polyline fill="none" points="168.5,-166.5 168.5,-212.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="196" y="-197.3">input:</text>n",  
+"<polyline fill="none" points="168.5,-189.5 223.5,-189.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="196" y="-174.3">output:</text>n",  
+"<polyline fill="none" points="223.5,-166.5 223.5,-212.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="272" y="-197.3">(None, 4)</text>n",  
+"<polyline fill="none" points="223.5,-189.5 320.5,-189.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="272" y="-174.3">(None, 4, 100)</text>n",  
+"</g>n",  
+"<!-- 139882786476752&#45;&gt;139882786476816 -->n",  
+"<g class="edge" id="edge1"><title>139882786476752-&gt;139882786476816</title>n",  
+"<path d="M161,-249.366C161,-241.152 161,-231.658 161,-222.725" fill="none" stroke="black"/>n",  
+"<polygon fill="black" points="164.5,-222.607 161,-212.607 157.5,-222.607 164.5,-222.607" stroke="black"/>n",  
+"</g>n",  
+"<!-- 139882786476176 -->n",  
+"<g class="node" id="node3"><title>139882786476176</title>n",  
+"<polygon fill="none" points="21,-83.5 21,-129.5 301,-129.5 301,-83.5 21,-83.5" stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="85" y="-102.8">lambda_2 (Lambda)</text>n",  
+"<polyline fill="none" points="149,-83.5 149,-129.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="176.5" y="-114.3">input:</text>n",  
+"<polyline fill="none" points="149,-106.5 204,-106.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="176.5" y="-91.3">output:</text>n",  
+"<polyline fill="none" points="204,-83.5 204,-129.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="252.5" y="-114.3">(None, 4, 100)</text>n",  
+"<polyline fill="none" points="204,-106.5 301,-106.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="252.5" y="-91.3">(None, 100)</text>n",  
+"</g>n",  
+"<!-- 139882786476816&#45;&gt;139882786476176 -->n",  
+"<g class="edge" id="edge2"><title>139882786476816-&gt;139882786476176</title>n",  
+"<path d="M161,-166.366C161,-158.152 161,-148.658 161,-139.725" fill="none" stroke="black"/>n",  
+"<polygon fill="black" points="164.5,-139.607 161,-129.607 157.5,-139.607 164.5,-139.607" stroke="black"/>n",  
+"</g>n",  
+"<!-- 139882786521424 -->n",  
+"<g class="node" id="node4"><title>139882786521424</title>n",  
+"<polygon fill="none" points="38.5,-0.5 38.5,-46.5 283.5,-46.5 283.5,-0.5 38.5,-0.5" stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="92" y="-19.8">dense_1 (Dense)</text>n",  
+"<polyline fill="none" points="145.5,-0.5 145.5,-46.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="173" y="-31.3">input:</text>n",  
+"<polyline fill="none" points="145.5,-23.5 200.5,-23.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="173" y="-8.3">output:</text>n",  
+"<polyline fill="none" points="200.5,-0.5 200.5,-46.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="242" y="-31.3">(None, 100)</text>n",  
+"<polyline fill="none" points="200.5,-23.5 283.5,-23.5 " stroke="black"/>n",  
+"<text font-family="Times,serif" font-size="14.00" text-anchor="middle" x="242" y="-8.3">(None, 630)</text>n",  
+"</g>n",  
+"<!-- 139882786476176&#45;&gt;139882786521424 -->n",  
+"<g class="edge" id="edge3"><title>139882786476176-&gt;139882786521424</title>n",  
+"<path d="M161,-83.3664C161,-75.1516 161,-65.6579 161,-56.7252" fill="none" stroke="black"/>n",  
+"<polygon fill="black" points="164.5,-56.6068 161,-46.6068 157.5,-56.6069 164.5,-56.6068" stroke="black"/>n",  
+"</g>n",  
+"</g>n",  
+"</svg>"  
+],  
+"text/plain": [  
+"<IPython.core.display.SVG object>"  
+]  
+},  
+"execution_count": 8,  
+"metadata": {},  
+"output_type": "execute_result"  
+}  
+],  
+"source": [  
+"### ネットワーク構造をシーケンシャルにn",  
+"cbow = Sequential()n",  
+"n",  
+"### 入力層は Embeddding で固定次元に変換n",  
+"cbow.add(Embedding(input_dim=V, output_dim=dim, init='glorot_uniform',input_length=window_size*2))n",  
+"n",  
+"### 入力層の出力を、dim 次元ベクトルの平均値にするn",  
+"cbow.add(Lambda(lambda x: K.mean(x, axis=1), output_shape=(dim,)))n",  
+"n",  
+"### dim 次元に変換された 4 つの単語を入力とする第二層n",  
+"cbow.add(Dense(V, init='glorot_uniform', activation='softmax'))n",  
+"n",  
+"### スケーラブル・ベクター・グラフィックを生成、表示n",  
+"SVG(model_to_dot(cbow, show_shapes=True).create(prog='dot', format='svg'))"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": 9,  
+"metadata": {  
+"collapsed": true  
+},  
+"outputs": [],  
+"source": [  
+"### 学習過程の確認n",  
+"cbow.compile(loss='categorical_crossentropy', optimizer="adadelta")"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": 10,  
+"metadata": {  
+"collapsed": false  
+},  
+"outputs": [  
+{  
+"name": "stdout",  
+"output_type": "stream",  
+"text": [  
+"(0, 11706.892395019531)n",  
+"(1, 10959.997585296631)n",  
+"(2, 10518.412797451019)n",  
+"(3, 10282.839844703674)n",  
+"(4, 10125.285435676575)n",  
+"(5, 10016.342594146729)n",  
+"(6, 9907.9143269062042)n",  
+"(7, 9783.0850994586945)n",  
+"(8, 9649.9255139827728)n",  
+"(9, 9519.4949787855148)n"  
+]  
+}  
+],  
+"source": [  
+"### 学習開始n",  
+"for ite in range(10):n",  
+" loss = 0.n",  
+" for x, y in generate_data(corpus, window_size, V):n",  
+" loss += cbow.train_on_batch(x, y)n",  
+" print(ite, loss)"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": 16,  
+"metadata": {  
+"collapsed": false  
+},  
+"outputs": [],  
+"source": [  
+"### 書き込み用ファイルを生成n",  
+"f = open("vectors.txt", "w")n",  
+"n",  
+"### 語彙数と特徴ベクトルの次元数を書き込むn",  
+"f.write( " ".join([str(V-1), str(dim)]) )n",  
+"f.write("\n")"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": 17,  
+"metadata": {  
+"collapsed": true  
+},  
+"outputs": [],  
+"source": [  
+"vectors = cbow.get_weights()[0]n",  
+"n",  
+"### 学習で得られた単語の特徴ベクトルを書き込むn",  
+"for word, i in tokenizer.word_index.items():n",  
+" f.write(word)n",  
+" f.write(" ")n",  
+" f.write(" ".join(map(str, list(vectors[i,:]))))n",  
+" f.write("\n")n",  
+"f.close()"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": 18,  
+"metadata": {  
+"collapsed": true  
+},  
+"outputs": [],  
+"source": [  
+"w2v = Word2Vec.load_word2vec_format('./vectors.txt', binary=False)"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": 19,  
+"metadata": {  
+"collapsed": false  
+},  
+"outputs": [  
+{  
+"data": {  
+"text/plain": [  
+"[(u'she', 0.48996153473854065),n",  
+" (u'in', 0.3545055687427521),n",  
+" (u'a', 0.3302590548992157),n",  
+" (u'face\r', 0.33004695177078247),n",  
+" (u'it', 0.3296452760696411),n",  
+" (u'to\r', 0.3218887150287628),n",  
+" (u'who', 0.3210286498069763),n",  
+" (u'noticed', 0.31853413581848145),n",  
+" (u'about', 0.3024051785469055),n",  
+" (u'sister', 0.29495272040367126)]"  
+]  
+},  
+"execution_count": 19,  
+"metadata": {},  
+"output_type": "execute_result"  
+}  
+],  
+"source": [  
+"w2v.most_similar(positive=['alice'])"  
+]  
+},  
+{  
+"cell_type": "code",  
+"execution_count": null,  
+"metadata": {  
+"collapsed": true  
+},  
+"outputs": [],  
+"source": []  
+}  
+],  
+"metadata": {  
+"kernelspec": {  
+"display_name": "Python 2",  
+"language": "python",  
+"name": "python2"  
+},  
+"language_info": {  
+"codemirror_mode": {  
+"name": "ipython",  
+"version": 2  
+},  
+"file_extension": ".py",  
+"mimetype": "text/x-python",  
+"name": "python",  
+"nbconvert_exporter": "python",  
+"pygments_lexer": "ipython2",  
+"version": "2.7.9"  
+}  
+},  
+"nbformat": 4,  
+"nbformat_minor": 0  
+}  
